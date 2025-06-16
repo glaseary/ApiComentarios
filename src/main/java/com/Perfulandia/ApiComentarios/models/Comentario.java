@@ -23,7 +23,6 @@ public class Comentario {
     @JoinColumn(name = "usuario_id_usuario", nullable = false)
     private Usuario usuario;
 
-    // --- RELACIÓN MODIFICADA ---
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "producto_id_producto", nullable = false)
     private Producto producto;

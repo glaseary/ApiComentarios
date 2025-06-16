@@ -20,19 +20,12 @@ public class ComentarioController {
     @Autowired
     private ComentarioService comentarioService;
 
-    /**
-     * Lista TODOS los comentarios.
-     * GET /api/comentarios
-     */
+
     @GetMapping
     public ResponseEntity<List<ComentarioResponseDTO>> listarTodos() {
         return ResponseEntity.ok(comentarioService.listarTodos());
     }
 
-    /**
-     * Crea un nuevo comentario.
-     * POST /api/comentarios
-     */
     @PostMapping
     public ResponseEntity<Object> crear(@RequestBody ComentarioRequestDTO request) {
         try {
@@ -43,10 +36,6 @@ public class ComentarioController {
         }
     }
 
-    /**
-     * Actualiza un comentario existente.
-     * PUT /api/comentarios/{id}
-     */
     @PutMapping("/{id}")
     public ResponseEntity<Object> actualizar(@PathVariable Integer id, @RequestBody ComentarioRequestDTO request) {
         try {
@@ -56,10 +45,6 @@ public class ComentarioController {
         }
     }
     
-    /**
-     * Elimina un comentario por su ID.
-     * DELETE /api/comentarios/{id}
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
         try {
@@ -70,12 +55,8 @@ public class ComentarioController {
         }
     }
 
-    // --- ENDPOINTS DE BÚSQUEDA ESPECÍFICA ---
-    
-    /**
-     * Obtiene todos los comentarios de un producto específico.
-     * GET /api/comentarios/producto/{productoId}
-     */
+    // ENDPOINTS DE BÚSQUEDA ESPECÍFICA
+
     @GetMapping("/producto/{productoId}")
     public ResponseEntity<List<ComentarioResponseDTO>> obtenerPorProducto(@PathVariable Integer productoId) {
         try {
@@ -85,10 +66,6 @@ public class ComentarioController {
         }
     }
     
-    /**
-     * Obtiene todos los comentarios de un usuario específico.
-     * GET /api/comentarios/usuario/{usuarioId}
-     */
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<ComentarioResponseDTO>> obtenerPorUsuario(@PathVariable Integer usuarioId) {
         try {

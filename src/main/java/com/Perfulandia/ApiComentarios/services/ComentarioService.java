@@ -24,7 +24,7 @@ public class ComentarioService {
     @Autowired private UsuarioService usuarioService;
     @Autowired private ProductoService productoService;
 
-    // --- MÉTODO GET (Listar Todos) - AÑADIDO ---
+    // --- MÉTODO GET (Listar Todos)
     public List<ComentarioResponseDTO> listarTodos() {
         return comentarioRepository.findAll().stream()
                 .map(this::toResponseDTO)
@@ -45,7 +45,7 @@ public class ComentarioService {
         return toResponseDTO(comentarioRepository.save(comentario));
     }
 
-    // --- MÉTODO PUT (Actualizar) - AÑADIDO ---
+    // --- MÉTODO PUT (Actualizar)
     public ComentarioResponseDTO actualizarComentario(Integer id, ComentarioRequestDTO request) {
         Comentario comentarioExistente = comentarioRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Comentario no encontrado con ID: " + id));

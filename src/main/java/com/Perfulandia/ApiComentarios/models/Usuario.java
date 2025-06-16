@@ -12,7 +12,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario") // <-- Con la corrección de nombre
+    @Column(name = "id_usuario")
     private Integer idUsuario;
 
 
