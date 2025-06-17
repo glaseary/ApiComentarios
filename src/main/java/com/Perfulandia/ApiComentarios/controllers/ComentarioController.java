@@ -54,24 +54,4 @@ public class ComentarioController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    // ENDPOINTS DE BÚSQUEDA ESPECÍFICA
-
-    @GetMapping("/producto/{productoId}")
-    public ResponseEntity<List<ComentarioResponseDTO>> obtenerPorProducto(@PathVariable Integer productoId) {
-        try {
-            return ResponseEntity.ok(comentarioService.buscarPorProducto(productoId));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    
-    @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<ComentarioResponseDTO>> obtenerPorUsuario(@PathVariable Integer usuarioId) {
-        try {
-            return ResponseEntity.ok(comentarioService.buscarPorUsuario(usuarioId));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
 }

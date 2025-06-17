@@ -3,9 +3,9 @@ package com.Perfulandia.ApiComentarios.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.Perfulandia.ApiComentarios.models.Usuario;
+import com.Perfulandia.ApiComentarios.models.Pedido;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer>{
+public interface PedidoRepository extends JpaRepository<Pedido, Integer>{
 
 }

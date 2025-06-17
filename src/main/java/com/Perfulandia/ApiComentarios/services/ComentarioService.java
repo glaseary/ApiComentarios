@@ -4,15 +4,11 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.Perfulandia.ApiComentarios.dto.ComentarioRequestDTO;
-import com.Perfulandia.ApiComentarios.dto.ComentarioResponseDTO;
-import com.Perfulandia.ApiComentarios.dto.ProductoInfoDTO;
-import com.Perfulandia.ApiComentarios.dto.UsuarioInfoDTO;
+import com.Perfulandia.ApiComentarios.dto.*;
 import com.Perfulandia.ApiComentarios.models.Comentario;
-import com.Perfulandia.ApiComentarios.models.Producto;
-import com.Perfulandia.ApiComentarios.models.Usuario;
+import com.Perfulandia.ApiComentarios.models.Pedido;
 import com.Perfulandia.ApiComentarios.repository.ComentarioRepository;
-
+import com.Perfulandia.ApiComentarios.repository.PedidoRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,87 +17,73 @@ import java.util.stream.Collectors;
 public class ComentarioService {
 
     @Autowired private ComentarioRepository comentarioRepository;
-    @Autowired private UsuarioService usuarioService;
-    @Autowired private ProductoService productoService;
+    @Autowired private PedidoRepository pedidoRepository;
 
-    // --- MÉTODO GET (Listar Todos)
     public List<ComentarioResponseDTO> listarTodos() {
         return comentarioRepository.findAll().stream()
                 .map(this::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    // --- MÉTODO POST (Crear) ---
     public ComentarioResponseDTO crearComentario(ComentarioRequestDTO request) {
-        Usuario usuario = usuarioService.findUsuarioById(request.getUsuarioId());
-        Producto producto = productoService.findProductoById(request.getProductoId());
+        Pedido pedido = pedidoRepository.findById(request.getPedido())
+                .orElseThrow(() -> new EntityNotFoundException("Pedido no encontrado con ID: " + request.getPedido()));
 
         Comentario comentario = new Comentario();
         comentario.setDescripcion(request.getDescripcion());
         comentario.setCalificacion(request.getCalificacion());
-        comentario.setUsuario(usuario);
-        comentario.setProducto(producto);
+        comentario.setPedido(pedido);
 
         return toResponseDTO(comentarioRepository.save(comentario));
     }
 
-    // --- MÉTODO PUT (Actualizar)
     public ComentarioResponseDTO actualizarComentario(Integer id, ComentarioRequestDTO request) {
         Comentario comentarioExistente = comentarioRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Comentario no encontrado con ID: " + id));
 
-        Usuario usuario = usuarioService.findUsuarioById(request.getUsuarioId());
-        Producto producto = productoService.findProductoById(request.getProductoId());
+        Pedido pedido = pedidoRepository.findById(request.getPedido())
+                .orElseThrow(() -> new EntityNotFoundException("Pedido no encontrado con ID: " + request.getPedido()));
 
         comentarioExistente.setDescripcion(request.getDescripcion());
         comentarioExistente.setCalificacion(request.getCalificacion());
-        comentarioExistente.setUsuario(usuario);
-        comentarioExistente.setProducto(producto);
-        // La fecha no se actualiza
+        comentarioExistente.setPedido(pedido);
 
         return toResponseDTO(comentarioRepository.save(comentarioExistente));
     }
 
-    // --- Métodos de Búsqueda ---
-    public List<ComentarioResponseDTO> buscarPorProducto(Integer productoId) {
-        productoService.findProductoById(productoId);
-        return comentarioRepository.findByProductoIdProducto(productoId).stream()
-                .map(this::toResponseDTO)
-                .collect(Collectors.toList());
-    }
-    
-    public List<ComentarioResponseDTO> buscarPorUsuario(Integer usuarioId) {
-        usuarioService.findUsuarioById(usuarioId);
-        return comentarioRepository.findByUsuarioIdUsuario(usuarioId).stream()
-                .map(this::toResponseDTO)
-                .collect(Collectors.toList());
-    }
-
-    // --- MÉTODO DELETE ---
     public void eliminarComentario(Integer id) {
         if (!comentarioRepository.existsById(id)) {
             throw new EntityNotFoundException("Comentario no encontrado con ID: " + id);
         }
         comentarioRepository.deleteById(id);
     }
-    
-    // --- Conversor a DTO ---
+
     private ComentarioResponseDTO toResponseDTO(Comentario comentario) {
         ComentarioResponseDTO dto = new ComentarioResponseDTO();
         dto.setIdComentario(comentario.getIdComentario());
         dto.setDescripcion(comentario.getDescripcion());
         dto.setCalificacion(comentario.getCalificacion());
-        
-        UsuarioInfoDTO usuarioInfo = new UsuarioInfoDTO();
-        usuarioInfo.setIdUsuario(comentario.getUsuario().getIdUsuario());
-        usuarioInfo.setNombreUsuario(comentario.getUsuario().getNombreUsuario());
-        dto.setUsuario(usuarioInfo);
-        
-        ProductoInfoDTO productoInfo = new ProductoInfoDTO();
-        productoInfo.setIdProducto(comentario.getProducto().getIdProducto());
-        productoInfo.setNombre(comentario.getProducto().getNombre());
-        dto.setProducto(productoInfo);
-        
+
+        if (comentario.getPedido() != null) {
+            PedidoDTO pedidoDTO = new PedidoDTO();
+            pedidoDTO.setIdPedido(comentario.getPedido().getIdPedido());
+            pedidoDTO.setFechaPedido(comentario.getPedido().getFechaPedido());
+            pedidoDTO.setEstado(comentario.getPedido().getEstado());
+            pedidoDTO.setTotalNeto(comentario.getPedido().getTotalNeto());
+
+            UsuarioInfoDTO usuarioDTO = new UsuarioInfoDTO();
+            usuarioDTO.setIdUsuario(comentario.getPedido().getUsuario().getIdUsuario());
+            usuarioDTO.setNombreUsuario(comentario.getPedido().getUsuario().getNombreUsuario());
+            dto.setUsuario(usuarioDTO);
+
+            ProductoInfoDTO productoDTO = new ProductoInfoDTO();
+            productoDTO.setIdProducto(comentario.getPedido().getProducto().getIdProducto());
+            productoDTO.setNombre(comentario.getPedido().getProducto().getNombre());
+            dto.setProducto(productoDTO);
+
+            dto.setPedido(pedidoDTO);
+        }
+
         return dto;
     }
 }
