@@ -20,11 +20,7 @@ public class Comentario {
     private int calificacion;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id_usuario", nullable = false)
-    private Usuario usuario;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "producto_id_producto", nullable = false)
-    private Producto producto;
+    @JoinColumn(name = "PEDIDO_id_pedido", nullable = false)
+    private Pedido pedido;
 
 }

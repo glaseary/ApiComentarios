@@ -6,6 +6,7 @@ public class ComentarioResponseDTO {
     private Integer idComentario;
     private String descripcion;
     private int calificacion;
-    private UsuarioInfoDTO usuario;
+    private PedidoDTO pedido;
     private ProductoInfoDTO producto;
+    private UsuarioInfoDTO usuario;
 }
