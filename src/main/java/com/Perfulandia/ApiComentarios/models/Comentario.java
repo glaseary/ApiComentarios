@@ -19,8 +19,7 @@ public class Comentario {
     @Column(nullable = false, length = 11)
     private int calificacion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "PEDIDO_id_pedido", nullable = false)
+    @OneToOne(mappedBy = "comentario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Pedido pedido;
 
 }

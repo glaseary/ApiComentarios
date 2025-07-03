@@ -1,7 +1,9 @@
 package com.Perfulandia.ApiComentarios.controllers;
 
+import com.Perfulandia.ApiComentarios.dto.ComentarioDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,5 +55,18 @@ public class ComentarioController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/hateoas")
+    public List<ComentarioResponseDTO> listarHATEOAS() {
+        List<ComentarioResponseDTO> comentarios = comentarioService.listarTodos();
+        String gatewayUrl = "http://localhost:8888/api/proxy/comentarios";
+
+        for (ComentarioResponseDTO dto : comentarios) {
+            dto.add(Link.of(gatewayUrl).withRel("crear-nuevo-comentario").withType("POST"));
+            dto.add(Link.of(gatewayUrl).withRel("editar-comentario").withType("PUT"));
+            dto.add(Link.of(gatewayUrl).withRel("eliminar-comentario").withType("DELETE"));
+        }
+        return comentarios;
     }
 }

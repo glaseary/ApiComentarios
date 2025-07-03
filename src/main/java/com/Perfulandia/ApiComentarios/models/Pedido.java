@@ -33,4 +33,8 @@ public class Pedido {
     @JoinColumn(name = "PRODUCTO_id_producto", nullable = false)
     @JsonBackReference 
     private Producto producto;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COMENTARIO_id_comentario", nullable = false)
+    private Comentario comentario;
 }
