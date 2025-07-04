@@ -25,6 +25,12 @@ public class ComentarioService {
                 .collect(Collectors.toList());
     }
 
+    public ComentarioResponseDTO listarPorId(Integer id) {
+        Comentario comentario = comentarioRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Comentario no encontrado con ID: " + id));
+        return toResponseDTO(comentario);
+    }
+
     public ComentarioResponseDTO crearComentario(ComentarioRequestDTO request) {
         Pedido pedido = pedidoRepository.findById(request.getPedido())
                 .orElseThrow(() -> new EntityNotFoundException("Pedido no encontrado con ID: " + request.getPedido()));

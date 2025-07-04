@@ -28,6 +28,16 @@ public class ComentarioController {
         return ResponseEntity.ok(comentarioService.listarTodos());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getComentarioPorId(@PathVariable Integer id) {
+        try {
+            ComentarioResponseDTO comentario = comentarioService.listarPorId(id);
+            return ResponseEntity.ok(comentario);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
+    }
+
     @PostMapping
     public ResponseEntity<Object> crear(@RequestBody ComentarioRequestDTO request) {
         try {
@@ -54,6 +64,24 @@ public class ComentarioController {
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/{id}/hateoas")
+    public ResponseEntity<Object> getComentarioHATEOAS(@PathVariable Integer id) {
+        try {
+            ComentarioResponseDTO comentario = comentarioService.listarPorId(id);
+            String gatewayUrl = "http://localhost:8888/api/proxy/comentarios";
+
+            // Añadir enlaces HATEOAS específicos para este comentario
+            comentario.add(Link.of(gatewayUrl + "/" + id).withSelfRel().withType("GET"));
+            comentario.add(Link.of(gatewayUrl + "/" + id).withRel("editar-comentario").withType("PUT"));
+            comentario.add(Link.of(gatewayUrl + "/" + id).withRel("eliminar-comentario").withType("DELETE"));
+            comentario.add(Link.of(gatewayUrl).withRel("todos-los-comentarios").withType("GET"));
+
+            return ResponseEntity.ok(comentario);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 
