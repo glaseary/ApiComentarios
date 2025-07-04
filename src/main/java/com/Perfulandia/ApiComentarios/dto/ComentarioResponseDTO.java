@@ -1,4 +1,5 @@
 package com.Perfulandia.ApiComentarios.dto;
+
 import lombok.Data;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -7,7 +8,5 @@ public class ComentarioResponseDTO extends RepresentationModel<ComentarioRespons
     private Integer idComentario;
     private String descripcion;
     private int calificacion;
-    private PedidoDTO pedido;
-    private ProductoInfoDTO producto;
-    private UsuarioInfoDTO usuario;
+    private PedidoDTO pedido; // Solo el pedido, ya no hay producto ni usuario
 }

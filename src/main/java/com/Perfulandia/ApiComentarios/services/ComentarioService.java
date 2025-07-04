@@ -4,7 +4,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.Perfulandia.ApiComentarios.dto.*;
+import com.Perfulandia.ApiComentarios.dto.ComentarioRequestDTO;
+import com.Perfulandia.ApiComentarios.dto.ComentarioResponseDTO;
+import com.Perfulandia.ApiComentarios.dto.PedidoDTO;
 import com.Perfulandia.ApiComentarios.models.Comentario;
 import com.Perfulandia.ApiComentarios.models.Pedido;
 import com.Perfulandia.ApiComentarios.repository.ComentarioRepository;
@@ -39,8 +41,9 @@ public class ComentarioService {
         comentario.setDescripcion(request.getDescripcion());
         comentario.setCalificacion(request.getCalificacion());
         comentario.setPedido(pedido);
-
-        return toResponseDTO(comentarioRepository.save(comentario));
+        
+        Comentario comentarioGuardado = comentarioRepository.save(comentario);
+        return toResponseDTO(comentarioGuardado);
     }
 
     public ComentarioResponseDTO actualizarComentario(Integer id, ComentarioRequestDTO request) {
@@ -54,7 +57,8 @@ public class ComentarioService {
         comentarioExistente.setCalificacion(request.getCalificacion());
         comentarioExistente.setPedido(pedido);
 
-        return toResponseDTO(comentarioRepository.save(comentarioExistente));
+        Comentario comentarioActualizado = comentarioRepository.save(comentarioExistente);
+        return toResponseDTO(comentarioActualizado);
     }
 
     public void eliminarComentario(Integer id) {
@@ -64,6 +68,7 @@ public class ComentarioService {
         comentarioRepository.deleteById(id);
     }
 
+    // --- MÉTODO PRIVADO DE CONVERSIÓN SIMPLIFICADO ---
     private ComentarioResponseDTO toResponseDTO(Comentario comentario) {
         ComentarioResponseDTO dto = new ComentarioResponseDTO();
         dto.setIdComentario(comentario.getIdComentario());
@@ -76,20 +81,10 @@ public class ComentarioService {
             pedidoDTO.setFechaPedido(comentario.getPedido().getFechaPedido());
             pedidoDTO.setEstado(comentario.getPedido().getEstado());
             pedidoDTO.setTotalNeto(comentario.getPedido().getTotalNeto());
-
-            UsuarioInfoDTO usuarioDTO = new UsuarioInfoDTO();
-            usuarioDTO.setIdUsuario(comentario.getPedido().getUsuario().getIdUsuario());
-            usuarioDTO.setNombreUsuario(comentario.getPedido().getUsuario().getNombreUsuario());
-            dto.setUsuario(usuarioDTO);
-
-            ProductoInfoDTO productoDTO = new ProductoInfoDTO();
-            productoDTO.setIdProducto(comentario.getPedido().getProducto().getIdProducto());
-            productoDTO.setNombre(comentario.getPedido().getProducto().getNombre());
-            dto.setProducto(productoDTO);
-
+            
             dto.setPedido(pedidoDTO);
         }
-
+        // Ya no se mapea el producto ni el usuario
         return dto;
     }
 }

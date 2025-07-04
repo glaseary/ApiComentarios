@@ -1,3 +1,4 @@
+// src/main/java/com/Perfulandia/ApiComentarios/models/Comentario.java
 package com.Perfulandia.ApiComentarios.models;
 
 import jakarta.persistence.*;
@@ -16,10 +17,12 @@ public class Comentario {
     @Column(nullable = false, length = 255)
     private String descripcion;
 
-    @Column(nullable = false, length = 11)
+    @Column(nullable = false) // No necesitas length para un tipo int
     private int calificacion;
 
-    @OneToOne(mappedBy = "comentario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // ----- CORRECCIÓN AQUÍ -----
+    // La relación la define Comentario, porque tiene la clave foránea.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PEDIDO_id_pedido", nullable = false)
     private Pedido pedido;
-
 }
