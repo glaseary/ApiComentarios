@@ -1,7 +1,7 @@
+// src/main/java/com/Perfulandia/ApiComentarios/models/Pedido.java
 package com.Perfulandia.ApiComentarios.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDate;
@@ -26,15 +26,14 @@ public class Pedido {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USUARIO_id_usuario", nullable = false)
-    @JsonBackReference 
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCTO_id_producto", nullable = false)
-    @JsonBackReference 
     private Producto producto;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMENTARIO_id_comentario", nullable = false)
+    // ----- CORRECCIÓN AQUÍ -----
+    // Esta es la relación inversa. Comentario es el dueño.
+    @OneToOne(mappedBy = "pedido", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Comentario comentario;
 }
